@@ -24,10 +24,7 @@ export default function HomePage() {
   }).toUpperCase()
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-BW', {
-      style: 'currency',
-      currency: 'BWP',
-    }).format(amount)
+    return `P${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
   }
 
   return (
