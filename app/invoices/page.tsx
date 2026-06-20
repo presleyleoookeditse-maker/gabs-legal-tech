@@ -7,14 +7,99 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Plus, Download } from 'lucide-react'
 import { exportInvoicesCSV, downloadCSV } from '@/lib/csv-export'
+import { useState } from 'react'
 
 export default function InvoicesPage() {
-  const { invoices } = useAppStore()
+  const { invoices, addInvoice } = useAppStore()
+  const [showNewForm, setShowNewForm] = useState(false)
+  const [formData, setFormData] = useState({
+    description: '',
+    amount: '',
+    status: 'unpaid',
+  })
 
   const handleExportCSV = () => {
     const csv = exportInvoicesCSV(invoices)
     const today = new Date().toISOString().split('T')[0]
     downloadCSV(`Invoices_${today}.csv`, csv)
+  }
+
+  const handleAddInvoice = () => {
+    if (formData.description && formData.amount) {
+      addInvoice({
+        description: formData.description,
+        amount: parseFloat(formData.amount),
+        status: formData.status as 'paid' | 'unpaid' | 'overdue',
+        dateCreated: new Date().toISOString(),
+        daysOverdue: formData.status === 'overdue' ? 5 : 0,
+      })
+      setFormData({ description: '', amount: '', status: 'unpaid' })
+      setShowNewForm(false)
+    }
+  }
+
+  if (showNewForm) {
+    return (
+      <AppLayout>
+        <div className="max-w-md space-y-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold text-foreground">Add New Invoice</h1>
+            <Button
+              variant="outline"
+              onClick={() => setShowNewForm(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+
+          <Card className="bg-card p-6">
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-foreground">Description</label>
+                <input
+                  type="text"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-border bg-secondary/50 px-3 py-2 text-foreground placeholder-muted-foreground"
+                  placeholder="e.g., Consultation Fee"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground">Amount (Pula)</label>
+                <input
+                  type="number"
+                  value={formData.amount}
+                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-border bg-secondary/50 px-3 py-2 text-foreground placeholder-muted-foreground"
+                  placeholder="1500"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground">Status</label>
+                <select
+                  value={formData.status}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-border bg-secondary/50 px-3 py-2 text-foreground"
+                >
+                  <option value="paid">Paid</option>
+                  <option value="unpaid">Unpaid</option>
+                  <option value="overdue">Overdue</option>
+                </select>
+              </div>
+
+              <Button
+                onClick={handleAddInvoice}
+                className="w-full"
+              >
+                Add Invoice
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </AppLayout>
+    )
   }
 
   const totalUnpaid = invoices
@@ -36,7 +121,11 @@ export default function InvoicesPage() {
             <Download className="h-4 w-4" />
             Export CSV
           </Button>
-          <Button size="sm" className="gap-2">
+          <Button
+            size="sm"
+            className="gap-2"
+            onClick={() => setShowNewForm(true)}
+          >
             <Plus className="h-4 w-4" />
             New Invoice
           </Button>

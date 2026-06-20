@@ -7,14 +7,130 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Plus, Download } from 'lucide-react'
 import { exportAppointmentsCSV, downloadCSV } from '@/lib/csv-export'
+import { useState } from 'react'
 
 export default function AppointmentsPage() {
-  const { appointments } = useAppStore()
+  const { appointments, addAppointment } = useAppStore()
+  const [showNewForm, setShowNewForm] = useState(false)
+  const [formData, setFormData] = useState({
+    clientName: '',
+    caseType: 'Consultation',
+    date: new Date().toISOString().split('T')[0],
+    time: '10:00',
+    status: 'pending',
+  })
 
   const handleExportCSV = () => {
     const csv = exportAppointmentsCSV(appointments)
     const today = new Date().toISOString().split('T')[0]
     downloadCSV(`Appointments_${today}.csv`, csv)
+  }
+
+  const handleAddAppointment = () => {
+    if (formData.clientName && formData.date && formData.time) {
+      addAppointment({
+        clientName: formData.clientName,
+        caseType: formData.caseType,
+        date: formData.date,
+        time: formData.time,
+        status: formData.status as 'confirmed' | 'pending',
+      })
+      setFormData({
+        clientName: '',
+        caseType: 'Consultation',
+        date: new Date().toISOString().split('T')[0],
+        time: '10:00',
+        status: 'pending',
+      })
+      setShowNewForm(false)
+    }
+  }
+
+  if (showNewForm) {
+    return (
+      <AppLayout>
+        <div className="max-w-md space-y-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold text-foreground">Add New Appointment</h1>
+            <Button
+              variant="outline"
+              onClick={() => setShowNewForm(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+
+          <Card className="bg-card p-6">
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-foreground">Client Name</label>
+                <input
+                  type="text"
+                  value={formData.clientName}
+                  onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-border bg-secondary/50 px-3 py-2 text-foreground placeholder-muted-foreground"
+                  placeholder="Client name"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground">Case Type</label>
+                <select
+                  value={formData.caseType}
+                  onChange={(e) => setFormData({ ...formData, caseType: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-border bg-secondary/50 px-3 py-2 text-foreground"
+                >
+                  <option>Consultation</option>
+                  <option>Case Review</option>
+                  <option>Hearing Prep</option>
+                  <option>Document Review</option>
+                  <option>Follow-up</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground">Date</label>
+                <input
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-border bg-secondary/50 px-3 py-2 text-foreground"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground">Time</label>
+                <input
+                  type="time"
+                  value={formData.time}
+                  onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-border bg-secondary/50 px-3 py-2 text-foreground"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground">Status</label>
+                <select
+                  value={formData.status}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-border bg-secondary/50 px-3 py-2 text-foreground"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="confirmed">Confirmed</option>
+                </select>
+              </div>
+
+              <Button
+                onClick={handleAddAppointment}
+                className="w-full"
+              >
+                Add Appointment
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </AppLayout>
+    )
   }
 
   const sortedAppointments = [...appointments].sort((a, b) =>
@@ -36,7 +152,11 @@ export default function AppointmentsPage() {
             <Download className="h-4 w-4" />
             Export CSV
           </Button>
-          <Button size="sm" className="gap-2">
+          <Button
+            size="sm"
+            className="gap-2"
+            onClick={() => setShowNewForm(true)}
+          >
             <Plus className="h-4 w-4" />
             New Appointment
           </Button>
