@@ -1,6 +1,7 @@
 'use client'
 
 import { useAppStore } from '@/lib/app-store'
+import { AppLayout } from '@/components/app-layout'
 import Link from 'next/link'
 import { FileText, Calendar, DollarSign, Mail, ArrowRight, AlertCircle } from 'lucide-react'
 
@@ -19,8 +20,8 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-black" suppressHydrationWarning>
-      <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+    <AppLayout>
+      <div className="space-y-8" suppressHydrationWarning>
         {/* Header */}
         <div>
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Welcome to Gabs Legal Tech</h1>
@@ -117,7 +118,7 @@ export default function HomePage() {
             </div>
           </Link>
         </div>
-      </main>
-    </div>
+      </div>
+    </AppLayout>
   )
 }
