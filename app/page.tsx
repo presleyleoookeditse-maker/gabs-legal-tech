@@ -16,12 +16,15 @@ export default function HomePage() {
   ).length
   const newMessages = 2
 
-  const todayDate = new Date()
-  const todayFormatted = todayDate.toLocaleDateString('en-BW', { 
-    month: 'short', 
-    day: 'numeric', 
-    year: 'numeric' 
-  }).toUpperCase()
+  // Format date as "20 JUN 2026" (consistent between server and client)
+  const getTodayFormatted = () => {
+    const d = new Date()
+    const day = String(d.getDate()).padStart(2, '0')
+    const month = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][d.getMonth()]
+    const year = d.getFullYear()
+    return `${day} ${month} ${year}`
+  }
+  const todayFormatted = getTodayFormatted()
 
   const formatCurrency = (amount: number) => {
     return `P${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
