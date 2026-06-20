@@ -30,6 +30,12 @@ export default function DocumentsPage() {
     termMonths: '',
   })
 
+  const addText = (doc: any, text: string, x: number, y: number, options = {}) => {
+    const wrapped = doc.splitTextToSize(text, doc.internal.pageSize.getWidth() - 40)
+    doc.text(wrapped, x, y, options)
+    return wrapped.length * 4 + 3
+  }
+
   const generateNDAPDF = () => {
     if (!ndaForm.partyAName || !ndaForm.partyBName || !ndaForm.effectiveDate) {
       alert('Please fill in all required fields')
@@ -39,89 +45,139 @@ export default function DocumentsPage() {
     const doc = new jsPDF()
     const pageWidth = doc.internal.pageSize.getWidth()
     const pageHeight = doc.internal.pageSize.getHeight()
-    let yPos = 20
+    let yPos = 15
 
-    // Header
+    // Letterhead
     doc.setFont('Arial', 'bold')
-    doc.setFontSize(16)
-    doc.text('NON-DISCLOSURE AGREEMENT', pageWidth / 2, yPos, { align: 'center' })
-    yPos += 15
+    doc.setFontSize(14)
+    doc.text('GABS LEGAL TECH', 20, yPos)
+    doc.setFontSize(9)
+    doc.setFont('Arial', 'normal')
+    doc.text('Professional Legal Services', 20, yPos + 5)
+    doc.text('Gaborone, Botswana', 20, yPos + 9)
+    
+    yPos += 20
 
-    // Parties
+    // Title
+    doc.setFont('Arial', 'bold')
+    doc.setFontSize(14)
+    doc.text('CONFIDENTIALITY AND NON-DISCLOSURE AGREEMENT', pageWidth / 2, yPos, { align: 'center' })
+    yPos += 12
+
+    // Date and Parties
     doc.setFontSize(10)
     doc.setFont('Arial', 'normal')
-    doc.text(`This Non-Disclosure Agreement is entered into on ${ndaForm.effectiveDate}`, 20, yPos)
-    yPos += 10
-    doc.text(`BETWEEN: ${ndaForm.partyAName}`, 20, yPos)
+    yPos += addText(doc, `THIS AGREEMENT is made and entered into effective as of the ${ndaForm.effectiveDate} ("Effective Date")`, 20, yPos)
     yPos += 5
-    doc.text(`Address: ${ndaForm.partyAAddress}`, 25, yPos)
-    yPos += 8
-    doc.text(`AND: ${ndaForm.partyBName}`, 20, yPos)
-    yPos += 5
-    doc.text(`Address: ${ndaForm.partyBAddress}`, 25, yPos)
-    yPos += 15
-
-    // Terms
-    doc.setFont('Arial', 'bold')
-    doc.text('1. CONFIDENTIAL INFORMATION', 20, yPos)
-    yPos += 8
-    doc.setFont('Arial', 'normal')
-    const terms1 = doc.splitTextToSize(
-      'The Disclosing Party agrees to disclose certain confidential information to the Receiving Party. This information includes but is not limited to business plans, financial data, client lists, technical information, and trade secrets.',
-      pageWidth - 40
-    )
-    doc.text(terms1, 20, yPos)
-    yPos += terms1.length * 4 + 8
 
     doc.setFont('Arial', 'bold')
-    doc.text('2. OBLIGATIONS OF RECEIVING PARTY', 20, yPos)
-    yPos += 8
+    doc.text('BETWEEN:', 20, yPos)
+    yPos += 6
+
     doc.setFont('Arial', 'normal')
-    const terms2 = doc.splitTextToSize(
-      'The Receiving Party agrees to keep all Confidential Information in strict confidence and not disclose it to any third party without prior written consent.',
-      pageWidth - 40
-    )
-    doc.text(terms2, 20, yPos)
-    yPos += terms2.length * 4 + 8
+    yPos += addText(doc, `${ndaForm.partyAName}, a person resident at ${ndaForm.partyAAddress} ("the Disclosing Party")`, 25, yPos)
+    yPos += 3
 
     doc.setFont('Arial', 'bold')
-    doc.text('3. TERM', 20, yPos)
-    yPos += 8
+    doc.text('AND:', 20, yPos)
+    yPos += 6
+
     doc.setFont('Arial', 'normal')
-    doc.text(`This Agreement shall remain in effect for ${ndaForm.termMonths} months from the Effective Date.`, 20, yPos)
+    yPos += addText(doc, `${ndaForm.partyBName}, a person resident at ${ndaForm.partyBAddress} ("the Receiving Party")`, 25, yPos)
+    yPos += 8
+
+    doc.setFont('Arial', 'bold')
+    doc.text('WHEREAS:', 20, yPos)
+    yPos += 6
+
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `The Disclosing Party desires to disclose certain confidential information to the Receiving Party for the purpose of business discussion and evaluation. The parties wish to protect the confidentiality of such information.`, 25, yPos)
     yPos += 10
 
     doc.setFont('Arial', 'bold')
-    doc.text('4. GOVERNING LAW', 20, yPos)
+    doc.text('NOW IT IS AGREED:', 20, yPos)
     yPos += 8
-    doc.setFont('Arial', 'normal')
-    const terms3 = doc.splitTextToSize(
-      'This Agreement shall be governed by and construed in accordance with the laws of Botswana, without regard to conflicts of law principles.',
-      pageWidth - 40
-    )
-    doc.text(terms3, 20, yPos)
-    yPos += terms3.length * 4 + 12
 
-    // Signature blocks
+    // Clause 1
     doc.setFont('Arial', 'bold')
-    doc.text('SIGNATURES:', 20, yPos)
+    doc.text('1. DEFINITION OF CONFIDENTIAL INFORMATION', 20, yPos)
+    yPos += 6
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `"Confidential Information" means all information, whether written, oral, electronic or visual, disclosed by the Disclosing Party to the Receiving Party, including but not limited to business plans, financial statements, pricing information, technical data, trade secrets, client lists, proprietary processes, marketing strategies, and any other information marked as confidential or which reasonably should be understood to be confidential.`, 20, yPos)
+    yPos += 8
+
+    // Clause 2
+    doc.setFont('Arial', 'bold')
+    doc.text('2. EXCLUSIONS FROM CONFIDENTIAL INFORMATION', 20, yPos)
+    yPos += 6
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `Confidential Information shall not include information that: (a) is or becomes publicly available without breach of this Agreement; (b) is rightfully received by the Receiving Party from a third party without confidentiality restrictions; (c) is independently developed by the Receiving Party without use of Confidential Information; or (d) is required to be disclosed by law or court order.`, 20, yPos)
+    yPos += 8
+
+    // Clause 3
+    doc.setFont('Arial', 'bold')
+    doc.text('3. OBLIGATIONS OF RECEIVING PARTY', 20, yPos)
+    yPos += 6
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `The Receiving Party agrees to: (a) maintain the Confidential Information in strict confidence using reasonable care; (b) limit disclosure to employees and advisors with a legitimate need to know; (c) not use the Confidential Information except for the purpose stated herein; and (d) ensure that employees and advisors are bound by confidentiality obligations no less restrictive than those contained herein.`, 20, yPos)
+    yPos += 8
+
+    // Clause 4
+    doc.setFont('Arial', 'bold')
+    doc.text('4. TERM AND DURATION', 20, yPos)
+    yPos += 6
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `This Agreement shall commence on the Effective Date and shall continue for a period of ${ndaForm.termMonths} (${ndaForm.termMonths}) months, unless sooner terminated by either party upon thirty (30) days written notice. The obligations under this Agreement shall survive termination for three (3) years.`, 20, yPos)
+    yPos += 8
+
+    // Clause 5
+    doc.setFont('Arial', 'bold')
+    doc.text('5. REMEDIES', 20, yPos)
+    yPos += 6
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `The Receiving Party acknowledges that breach of this Agreement may cause irreparable harm to the Disclosing Party for which monetary damages would be an inadequate remedy. The parties agree that injunctive relief shall be available in addition to any other remedies available at law or in equity.`, 20, yPos)
+    yPos += 8
+
+    // Clause 6
+    doc.setFont('Arial', 'bold')
+    doc.text('6. GOVERNING LAW', 20, yPos)
+    yPos += 6
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `This Agreement shall be governed by and construed in accordance with the laws of the Republic of Botswana, and the parties hereby submit to the exclusive jurisdiction of the courts of Botswana.`, 20, yPos)
+    yPos += 8
+
+    // Clause 7
+    doc.setFont('Arial', 'bold')
+    doc.text('7. SEVERABILITY', 20, yPos)
+    yPos += 6
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `If any provision of this Agreement is found to be invalid or unenforceable, such provision shall be modified to the minimum extent necessary to make it enforceable, and all other provisions shall remain in full force and effect.`, 20, yPos)
+    yPos += 10
+
+    // Signature section
+    doc.setFont('Arial', 'bold')
+    doc.text('IN WITNESS WHEREOF the parties have executed this Agreement as of the Effective Date.', 20, yPos)
     yPos += 12
 
     doc.setFont('Arial', 'normal')
-    doc.text('_________________________', 20, yPos)
-    doc.text('_________________________', pageWidth / 2 + 10, yPos)
+    doc.text('DISCLOSING PARTY:', 20, yPos)
+    yPos += 8
+    doc.text('_______________________', 20, yPos)
+    yPos += 4
+    doc.text(ndaForm.partyAName, 20, yPos)
     yPos += 5
-    doc.text(`${ndaForm.partyAName}`, 20, yPos)
-    doc.text(`${ndaForm.partyBName}`, pageWidth / 2 + 10, yPos)
+    doc.text('Date: _______________', 20, yPos)
+
+    doc.text('RECEIVING PARTY:', pageWidth / 2 + 5, yPos - 9)
+    doc.text('_______________________', pageWidth / 2 + 5, yPos - 1)
+    doc.text(ndaForm.partyBName, pageWidth / 2 + 5, yPos + 3)
+    doc.text('Date: _______________', pageWidth / 2 + 5, yPos + 8)
 
     // Footer
     doc.setFontSize(8)
-    doc.text(
-      `Generated by Gabs Legal Tech - ${new Date().toLocaleDateString('en-BW')}`,
-      pageWidth / 2,
-      pageHeight - 10,
-      { align: 'center' }
-    )
+    doc.setFont('Arial', 'italic')
+    doc.text(`Generated by Gabs Legal Tech on ${new Date().toLocaleDateString('en-BW')}`, pageWidth / 2, pageHeight - 8, { align: 'center' })
+    doc.text('This document is prepared for legal purposes. For clarification, consult with a qualified attorney.', pageWidth / 2, pageHeight - 4, { align: 'center' })
 
     const filename = `NDA_${ndaForm.partyAName.replace(/\s+/g, '_')}_${ndaForm.partyBName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
     doc.save(filename)
@@ -136,109 +192,145 @@ export default function DocumentsPage() {
     const doc = new jsPDF()
     const pageWidth = doc.internal.pageSize.getWidth()
     const pageHeight = doc.internal.pageSize.getHeight()
-    let yPos = 20
+    let yPos = 15
 
-    // Header
+    // Letterhead
     doc.setFont('Arial', 'bold')
-    doc.setFontSize(16)
+    doc.setFontSize(14)
+    doc.text('GABS LEGAL TECH', 20, yPos)
+    doc.setFontSize(9)
+    doc.setFont('Arial', 'normal')
+    doc.text('Professional Legal Services', 20, yPos + 5)
+    doc.text('Gaborone, Botswana', 20, yPos + 9)
+    
+    yPos += 20
+
+    // Title
+    doc.setFont('Arial', 'bold')
+    doc.setFontSize(14)
     doc.text('RESIDENTIAL LEASE AGREEMENT', pageWidth / 2, yPos, { align: 'center' })
-    yPos += 15
+    yPos += 12
 
     // Parties
     doc.setFontSize(10)
     doc.setFont('Arial', 'normal')
-    doc.text(`This Lease Agreement is entered into on ${leaseForm.startDate}`, 20, yPos)
+    yPos += addText(doc, `THIS LEASE AGREEMENT is entered into effective as of ${leaseForm.startDate} ("Commencement Date")`, 20, yPos)
+    yPos += 5
+
+    doc.setFont('Arial', 'bold')
+    doc.text('BETWEEN:', 20, yPos)
+    yPos += 6
+
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `${leaseForm.landlordName} ("the Landlord")`, 25, yPos)
+    yPos += 3
+
+    doc.setFont('Arial', 'bold')
+    doc.text('AND:', 20, yPos)
+    yPos += 6
+
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `${leaseForm.tenantName} ("the Tenant")`, 25, yPos)
+    yPos += 8
+
+    doc.setFont('Arial', 'bold')
+    doc.text('PROPERTY DETAILS:', 20, yPos)
+    yPos += 6
+
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `The Landlord hereby leases to the Tenant, and the Tenant hereby leases from the Landlord, the residential property located at: ${leaseForm.propertyAddress}`, 20, yPos)
     yPos += 10
-    doc.text(`LANDLORD: ${leaseForm.landlordName}`, 20, yPos)
-    yPos += 8
-    doc.text(`TENANT: ${leaseForm.tenantName}`, 20, yPos)
-    yPos += 8
-    doc.text(`PROPERTY: ${leaseForm.propertyAddress}`, 20, yPos)
-    yPos += 15
 
-    // Terms
+    // Rental Terms
     doc.setFont('Arial', 'bold')
-    doc.text('1. RENTAL TERMS', 20, yPos)
-    yPos += 8
+    doc.text('1. RENTAL PAYMENT', 20, yPos)
+    yPos += 6
     doc.setFont('Arial', 'normal')
-    doc.text(`Monthly Rent: P${parseFloat(leaseForm.monthlyRent).toFixed(2)}`, 20, yPos)
+    doc.text(`1.1 Monthly Rent: P${parseFloat(leaseForm.monthlyRent).toFixed(2)}`, 20, yPos)
     yPos += 5
-    doc.text(`Security Deposit: P${parseFloat(leaseForm.deposit).toFixed(2)}`, 20, yPos)
+    doc.text(`1.2 Security Deposit: P${parseFloat(leaseForm.deposit).toFixed(2)}`, 20, yPos)
     yPos += 5
-    doc.text(`Lease Term: ${leaseForm.termMonths} months`, 20, yPos)
-    yPos += 12
+    yPos += addText(doc, `1.3 VAT Compliance: A Value Added Tax (VAT) of 15% shall be added to all rental payments in accordance with Botswana Revenue Authority (BURS) requirements.`, 20, yPos)
+    yPos += 5
+    yPos += addText(doc, `1.4 Rent shall be due and payable in advance on the first day of each month. Late payment shall incur a penalty of 10% of the monthly rent plus 0.5% interest per day on arrears.`, 20, yPos)
+    yPos += 10
 
+    // Lease Term
     doc.setFont('Arial', 'bold')
-    doc.text('2. PAYMENT OBLIGATIONS', 20, yPos)
-    yPos += 8
+    doc.text('2. LEASE TERM', 20, yPos)
+    yPos += 6
     doc.setFont('Arial', 'normal')
-    const payment = doc.splitTextToSize(
-      'Tenant shall pay rent in full and on time each month. Late payments will accrue a 10% penalty. VAT (15%) is added to rent for BURS compliance.',
-      pageWidth - 40
-    )
-    doc.text(payment, 20, yPos)
-    yPos += payment.length * 4 + 8
+    yPos += addText(doc, `This Lease shall be for a fixed term of ${leaseForm.termMonths} (${leaseForm.termMonths}) months, commencing on the Commencement Date. Upon expiration, the Lease shall terminate unless renewed in writing by both parties.`, 20, yPos)
+    yPos += 10
 
+    // Quiet Enjoyment
     doc.setFont('Arial', 'bold')
     doc.text('3. QUIET ENJOYMENT', 20, yPos)
-    yPos += 8
+    yPos += 6
     doc.setFont('Arial', 'normal')
-    const quiet = doc.splitTextToSize(
-      'Landlord covenants to provide quiet enjoyment of the property to Tenant, free from interference.',
-      pageWidth - 40
-    )
-    doc.text(quiet, 20, yPos)
-    yPos += quiet.length * 4 + 8
-
-    doc.setFont('Arial', 'bold')
-    doc.text('4. REPAIRS AND MAINTENANCE', 20, yPos)
-    yPos += 8
-    doc.setFont('Arial', 'normal')
-    const repairs = doc.splitTextToSize(
-      'Landlord shall maintain the property in good repair and habitable condition. Tenant shall maintain minor repairs and keep property clean.',
-      pageWidth - 40
-    )
-    doc.text(repairs, 20, yPos)
-    yPos += repairs.length * 4 + 8
-
-    doc.setFont('Arial', 'bold')
-    doc.text('5. TERMINATION', 20, yPos)
-    yPos += 8
-    doc.setFont('Arial', 'normal')
-    doc.text('Either party may terminate this lease by providing 2 months written notice.', 20, yPos)
+    yPos += addText(doc, `The Landlord covenants that the Tenant shall have peaceful and quiet enjoyment of the Property without interruption or disturbance from the Landlord or any person claiming under the Landlord, subject to the terms and conditions of this Lease.`, 20, yPos)
     yPos += 10
 
+    // Repairs and Maintenance
     doc.setFont('Arial', 'bold')
-    doc.text('6. GOVERNING LAW', 20, yPos)
-    yPos += 8
+    doc.text('4. REPAIRS AND MAINTENANCE', 20, yPos)
+    yPos += 6
     doc.setFont('Arial', 'normal')
-    const law = doc.splitTextToSize(
-      'This Agreement shall be governed by the laws of Botswana.',
-      pageWidth - 40
-    )
-    doc.text(law, 20, yPos)
-    yPos += law.length * 4 + 12
+    yPos += addText(doc, `4.1 The Landlord shall maintain the structure and exterior of the Property in good repair and habitable condition.`, 20, yPos)
+    yPos += 4
+    yPos += addText(doc, `4.2 The Tenant shall maintain the interior, including minor repairs, fixtures, and appliances, and shall keep the Property clean and sanitary at all times.`, 20, yPos)
+    yPos += 4
+    yPos += addText(doc, `4.3 The Tenant shall promptly notify the Landlord of any defects or required repairs.`, 20, yPos)
+    yPos += 10
 
-    // Signature blocks
+    // Termination
     doc.setFont('Arial', 'bold')
-    doc.text('SIGNATURES:', 20, yPos)
+    doc.text('5. TERMINATION', 20, yPos)
+    yPos += 6
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `Either party may terminate this Lease upon written notice of not less than two (2) months prior to the intended date of termination. Upon termination, the Tenant shall vacate the Property in clean and good repair condition.`, 20, yPos)
+    yPos += 10
+
+    // Utilities and Services
+    doc.setFont('Arial', 'bold')
+    doc.text('6. UTILITIES', 20, yPos)
+    yPos += 6
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `The Tenant shall be responsible for all utilities including water, electricity, and refuse collection. The Tenant shall maintain utilities in the Tenant's name for billing purposes.`, 20, yPos)
+    yPos += 10
+
+    // Governing Law
+    doc.setFont('Arial', 'bold')
+    doc.text('7. GOVERNING LAW', 20, yPos)
+    yPos += 6
+    doc.setFont('Arial', 'normal')
+    yPos += addText(doc, `This Lease Agreement shall be governed by and construed in accordance with the laws of the Republic of Botswana. The parties submit to the exclusive jurisdiction of the courts of Botswana.`, 20, yPos)
+    yPos += 10
+
+    // Signature section
+    doc.setFont('Arial', 'bold')
+    doc.text('IN WITNESS WHEREOF the parties have executed this Lease as of the Commencement Date.', 20, yPos)
     yPos += 12
 
     doc.setFont('Arial', 'normal')
-    doc.text('_________________________', 20, yPos)
-    doc.text('_________________________', pageWidth / 2 + 10, yPos)
-    yPos += 5
+    doc.text('LANDLORD:', 20, yPos)
+    yPos += 8
+    doc.text('_______________________', 20, yPos)
+    yPos += 4
     doc.text(leaseForm.landlordName, 20, yPos)
-    doc.text(leaseForm.tenantName, pageWidth / 2 + 10, yPos)
+    yPos += 5
+    doc.text('Date: _______________', 20, yPos)
+
+    doc.text('TENANT:', pageWidth / 2 + 5, yPos - 9)
+    doc.text('_______________________', pageWidth / 2 + 5, yPos - 1)
+    doc.text(leaseForm.tenantName, pageWidth / 2 + 5, yPos + 3)
+    doc.text('Date: _______________', pageWidth / 2 + 5, yPos + 8)
 
     // Footer
     doc.setFontSize(8)
-    doc.text(
-      `Generated by Gabs Legal Tech - ${new Date().toLocaleDateString('en-BW')}`,
-      pageWidth / 2,
-      pageHeight - 10,
-      { align: 'center' }
-    )
+    doc.setFont('Arial', 'italic')
+    doc.text(`Generated by Gabs Legal Tech on ${new Date().toLocaleDateString('en-BW')}`, pageWidth / 2, pageHeight - 8, { align: 'center' })
+    doc.text('This document is prepared for legal purposes. For clarification, consult with a qualified attorney.', pageWidth / 2, pageHeight - 4, { align: 'center' })
 
     const filename = `Lease_${leaseForm.tenantName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
     doc.save(filename)
