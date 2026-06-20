@@ -154,9 +154,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         )}
       >
         <div className="flex h-full flex-col">
-          <div className="flex h-16 items-center justify-between border-b border-[#222] px-6">
-            <div className="flex items-center gap-3">
+          <div className="flex h-auto items-start justify-between border-b border-[#222] px-6 py-4">
+            <div className="flex flex-col gap-1">
               <h1 className="text-lg font-bold text-green-500">Gabs Legal Tech</h1>
+              <p className="text-xs text-gray-400">Built in Botswana</p>
             </div>
             <Button
               variant="ghost"
@@ -174,11 +175,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           </nav>
 
           <div className="border-t border-[#222] p-4">
-            <div className="rounded-lg bg-[#1a1a1a] p-4 space-y-2">
+            <div className="rounded-lg bg-[#1a1a1a] p-4">
               <p className="text-xs text-gray-500">
                 Professional legal case & client management for Botswana law firms
               </p>
-              <p className="text-xs text-[#00FF88] font-medium">Built in Botswana</p>
             </div>
           </div>
         </div>
