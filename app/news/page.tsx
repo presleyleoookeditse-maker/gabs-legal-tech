@@ -52,6 +52,7 @@ export default function NewsPage() {
           </Card>
         ))}
       </div>
+      </div>
     </AppLayout>
   )
 }
