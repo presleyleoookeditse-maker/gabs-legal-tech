@@ -17,6 +17,9 @@ import {
   Settings,
   X,
   ChevronRight,
+  Clock,
+  CheckSquare,
+  MessageCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
@@ -40,6 +43,10 @@ const navigation: NavItem[] = [
     name: 'More Tools',
     icon: MoreHorizontal,
     items: [
+      { name: 'Templates', href: '/more-tools/templates', icon: FileText },
+      { name: 'Timer', href: '/more-tools/timer', icon: Clock },
+      { name: 'Tasks', href: '/more-tools/tasks', icon: CheckSquare },
+      { name: 'WhatsApp Notes', href: '/more-tools/whatsapp', icon: MessageCircle },
       { name: 'Documents', href: '/documents', icon: FileText },
       { name: 'Client Intake', href: '/intake', icon: Users },
       { name: 'History', href: '/history', icon: History },

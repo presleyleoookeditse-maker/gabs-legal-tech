@@ -58,6 +58,42 @@ export interface FirmSettings {
   currency: string
 }
 
+export interface DocumentTemplate {
+  id: string
+  name: string
+  category: 'letter' | 'affidavit' | 'agreement' | 'notice'
+  content: string
+  fields: string[]
+}
+
+export interface BillableEntry {
+  id: string
+  caseId: string
+  description: string
+  hours: number
+  hourlyRate: number
+  total: number
+  date: string
+}
+
+export interface CaseTask {
+  id: string
+  caseId: string
+  title: string
+  dueDate: string
+  description: string
+  completed: boolean
+  priority: 'high' | 'medium' | 'low'
+}
+
+export interface CaseNote {
+  id: string
+  caseId: string
+  content: string
+  source: 'manual' | 'whatsapp' | 'voice'
+  createdAt: string
+}
+
 interface AppStore {
   // Documents
   documents: GeneratedDocument[]
@@ -86,6 +122,25 @@ interface AppStore {
   // Firm Settings
   firmSettings: FirmSettings
   updateFirmSettings: (settings: Partial<FirmSettings>) => void
+
+  // Document Templates
+  templates: DocumentTemplate[]
+  addTemplate: (template: Omit<DocumentTemplate, 'id'>) => void
+
+  // Billable Hours
+  billableEntries: BillableEntry[]
+  addBillableEntry: (entry: Omit<BillableEntry, 'id'>) => void
+  updateBillableEntry: (id: string, updates: Partial<BillableEntry>) => void
+
+  // Case Tasks
+  caseTasks: CaseTask[]
+  addCaseTask: (task: Omit<CaseTask, 'id'>) => void
+  updateCaseTask: (id: string, updates: Partial<CaseTask>) => void
+  addAutoTasksForCase: (caseId: string, caseType: string) => void
+
+  // Case Notes
+  caseNotes: CaseNote[]
+  addCaseNote: (note: Omit<CaseNote, 'id' | 'createdAt'>) => void
 }
 
 const mockCases: Case[] = [
@@ -170,6 +225,77 @@ const mockClients: Client[] = [
     caseNumber: 'GLT-002',
   },
 ]
+
+const mockTemplates: DocumentTemplate[] = [
+  {
+    id: '1',
+    name: 'Letter of Demand',
+    category: 'letter',
+    fields: ['client_name', 'case_number', 'defendant_name', 'amount', 'due_date'],
+    content: `Dear {{defendant_name}},
+
+RE: Demand for Payment - Case {{case_number}}
+
+This is a formal demand for payment of P{{amount}} due under our agreement dated [date].
+
+Please remit full payment within {{due_date}} days of this letter.
+
+Yours faithfully,
+[Law Firm Name]`,
+  },
+  {
+    id: '2',
+    name: 'Affidavit of Facts',
+    category: 'affidavit',
+    fields: ['deponent_name', 'case_number', 'facts'],
+    content: `I, {{deponent_name}}, do hereby make oath and say as follows:
+
+1. I am a party in Case {{case_number}}.
+2. The following facts are true to my knowledge:
+   {{facts}}
+
+Signed at Gaborone on this [date].
+
+{{deponent_name}}`,
+  },
+  {
+    id: '3',
+    name: 'Lease Termination Notice',
+    category: 'notice',
+    fields: ['tenant_name', 'property_address', 'effective_date'],
+    content: `NOTICE OF TERMINATION
+
+To: {{tenant_name}}
+Property: {{property_address}}
+
+This is formal notice that your tenancy is terminated effective {{effective_date}}.
+
+Please vacate the premises and return keys by the date above.
+
+Issued by: [Law Firm Name]
+Date: [Today's Date]`,
+  },
+]
+
+// Case type → Auto-generated tasks template
+const taskTemplates: Record<string, Array<{ title: string; daysUntil: number; description: string }>> = {
+  'Land Dispute': [
+    { title: 'File Application', daysUntil: 14, description: 'Lodge case with Land Board' },
+    { title: 'Serve Notice', daysUntil: 7, description: 'Serve defendant with case documents' },
+    { title: 'File Reply', daysUntil: 21, description: 'File response to defendant reply' },
+    { title: 'Prepare for Hearing', daysUntil: 5, description: 'Final preparation before hearing' },
+  ],
+  'Contract Dispute': [
+    { title: 'Demand Letter', daysUntil: 3, description: 'Send formal demand for payment' },
+    { title: 'File Case', daysUntil: 14, description: 'File claim in court' },
+    { title: 'Serve Documents', daysUntil: 7, description: 'Serve defendant with documents' },
+  ],
+  'Criminal': [
+    { title: 'Bail Application', daysUntil: 1, description: 'Prepare bail application' },
+    { title: 'Disclosure Request', daysUntil: 5, description: 'Request disclosure from prosecutor' },
+    { title: 'Preliminary Review', daysUntil: 10, description: 'Review case file and evidence' },
+  ],
+}
 
 export const useAppStore = create<AppStore>()(
   persist(
@@ -266,6 +392,90 @@ export const useAppStore = create<AppStore>()(
       updateFirmSettings: (settings) =>
         set((state) => ({
           firmSettings: { ...state.firmSettings, ...settings },
+        })),
+
+      // Document Templates
+      templates: mockTemplates,
+      addTemplate: (template) =>
+        set((state) => ({
+          templates: [
+            {
+              ...template,
+              id: crypto.randomUUID(),
+            },
+            ...state.templates,
+          ],
+        })),
+
+      // Billable Hours
+      billableEntries: [],
+      addBillableEntry: (entry) =>
+        set((state) => ({
+          billableEntries: [
+            {
+              ...entry,
+              id: crypto.randomUUID(),
+            },
+            ...state.billableEntries,
+          ],
+        })),
+      updateBillableEntry: (id, updates) =>
+        set((state) => ({
+          billableEntries: state.billableEntries.map((b) =>
+            b.id === id ? { ...b, ...updates } : b
+          ),
+        })),
+
+      // Case Tasks
+      caseTasks: [],
+      addCaseTask: (task) =>
+        set((state) => ({
+          caseTasks: [
+            {
+              ...task,
+              id: crypto.randomUUID(),
+            },
+            ...state.caseTasks,
+          ],
+        })),
+      updateCaseTask: (id, updates) =>
+        set((state) => ({
+          caseTasks: state.caseTasks.map((t) =>
+            t.id === id ? { ...t, ...updates } : t
+          ),
+        })),
+      addAutoTasksForCase: (caseId, caseType) =>
+        set((state) => {
+          const templates = taskTemplates[caseType] || []
+          const today = new Date()
+          const newTasks = templates.map((t) => ({
+            id: crypto.randomUUID(),
+            caseId,
+            title: t.title,
+            description: t.description,
+            completed: false,
+            priority: 'high' as const,
+            dueDate: new Date(today.getTime() + t.daysUntil * 24 * 60 * 60 * 1000)
+              .toISOString()
+              .split('T')[0],
+          }))
+          return {
+            caseTasks: [...newTasks, ...state.caseTasks],
+          }
+        }),
+
+      // Case Notes
+      caseNotes: [],
+      addCaseNote: (note) =>
+        set((state) => ({
+          caseNotes: [
+            {
+              ...note,
+              id: crypto.randomUUID(),
+              createdAt: new Date().toISOString(),
+            },
+            ...state.caseNotes,
+          ],
         })),
     }),
     {
