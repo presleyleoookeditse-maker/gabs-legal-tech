@@ -174,10 +174,11 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           </nav>
 
           <div className="border-t border-[#222] p-4">
-            <div className="rounded-lg bg-[#1a1a1a] p-4">
+            <div className="rounded-lg bg-[#1a1a1a] p-4 space-y-2">
               <p className="text-xs text-gray-500">
                 Professional legal case & client management for Botswana law firms
               </p>
+              <p className="text-xs text-[#00FF88] font-medium">Built in Botswana</p>
             </div>
           </div>
         </div>
