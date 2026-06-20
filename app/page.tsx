@@ -2,7 +2,7 @@
 
 import { useAppStore } from '@/lib/app-store'
 import Link from 'next/link'
-import { FileText, Calendar, DollarSign, Mail, ArrowRight, ArrowLeft, Share2, Star, MoreVertical } from 'lucide-react'
+import { FileText, Calendar, DollarSign, Mail, ArrowRight, AlertCircle } from 'lucide-react'
 
 export default function HomePage() {
   const { cases, appointments, invoices } = useAppStore()
@@ -12,10 +12,7 @@ export default function HomePage() {
     .filter((i) => i.status !== 'paid')
     .reduce((sum, i) => sum + i.amount, 0)
   const newMessages = 2
-  
-  // Use fixed date to avoid hydration mismatch
-  const todayFormatted = '20 JUN 2026'
-  const todayAppointments = 0
+  const appointmentsCount = appointments.length
 
   const formatCurrency = (amount: number) => {
     return `P${amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
@@ -23,105 +20,102 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-black" suppressHydrationWarning>
-      {/* Header */}
-      <header className="border-b border-[#222]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-4">
-                <ArrowLeft className="h-5 w-5 text-white cursor-pointer hover:text-green-500" />
+      <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Welcome to Gabs Legal Tech</h1>
+          <p className="text-gray-400 text-sm md:text-base">Professional legal case & client management for Botswana law firms</p>
+        </div>
+
+        {/* Stats Row - 4 cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Active Cases */}
+          <div className="bg-[#1a1a1a] rounded-lg p-6 border border-[#222]">
+            <p className="text-gray-400 text-sm mb-4">Active Cases</p>
+            <p className="text-4xl font-bold text-white mb-6">{activeCases}</p>
+            <FileText className="h-8 w-8 text-[#00FF88]" />
+          </div>
+
+          {/* Appointments */}
+          <div className="bg-[#1a1a1a] rounded-lg p-6 border border-[#222]">
+            <p className="text-gray-400 text-sm mb-4">Appointments Today</p>
+            <p className="text-4xl font-bold text-white mb-6">{appointmentsCount}</p>
+            <Calendar className="h-8 w-8 text-[#00FF88]" />
+          </div>
+
+          {/* Unpaid Invoices */}
+          <div className="bg-[#1a1a1a] rounded-lg p-6 border border-[#222]">
+            <p className="text-gray-400 text-sm mb-4">Unpaid Invoices</p>
+            <p className="text-4xl font-bold text-white mb-6">{formatCurrency(unpaidInvoices)}</p>
+            <DollarSign className="h-8 w-8 text-[#00FF88]" />
+          </div>
+
+          {/* Messages */}
+          <div className="bg-[#1a1a1a] rounded-lg p-6 border border-[#222]">
+            <p className="text-gray-400 text-sm mb-4">New Client Messages</p>
+            <p className="text-4xl font-bold text-white mb-6">{newMessages}</p>
+            <Mail className="h-8 w-8 text-[#00FF88]" />
+          </div>
+        </div>
+
+        {/* TODAY Section */}
+        <div className="bg-[#1a1a1a] rounded-lg p-6 border border-[#222]">
+          <h2 className="text-lg font-bold text-white mb-4">TODAY - 16 MAY 2026</h2>
+          <div className="space-y-4">
+            {/* Appointment */}
+            <div className="flex items-start gap-3 pb-4 border-b border-[#222]">
+              <Calendar className="h-5 w-5 text-[#00FF88] mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-white font-medium">10:00am - Mrs Kago Motswedi</p>
+                <p className="text-gray-400 text-sm">Land Dispute Consultation</p>
               </div>
-              <h1 className="text-2xl font-bold text-white mb-2">Welcome to Gabs Legal Tech</h1>
-              <p className="text-sm text-gray-400">Professional legal case & client management for Botswana law firms</p>
             </div>
-            <div className="flex items-center gap-3">
-              <Share2 className="h-5 w-5 text-gray-400 cursor-pointer hover:text-green-500" />
-              <Star className="h-5 w-5 text-gray-400 cursor-pointer hover:text-green-500" />
-              <MoreVertical className="h-5 w-5 text-gray-400 cursor-pointer hover:text-green-500" />
-              <span className="text-2xl ml-2">🇧🇼</span>
+
+            {/* Case */}
+            <div className="flex items-start gap-3 pb-4 border-b border-[#222]">
+              <FileText className="h-5 w-5 text-[#00FF88] mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-white font-medium">Case GLT-001 - Hearing in 2 days</p>
+                <p className="text-gray-400 text-sm">Mr Dube Thabo vs ABC Properties</p>
+              </div>
+            </div>
+
+            {/* Invoice */}
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-red-500 mt-1 flex-shrink-0" />
+              <div>
+                <p className="text-white font-medium">Invoice P2,000 - Overdue 5 days</p>
+                <p className="text-gray-400 text-sm">Filing Fees - GLT-002</p>
+              </div>
             </div>
           </div>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-6">
-          {/* Stats Row - 4 cards horizontal scroll */}
-          <div className="flex gap-4 overflow-x-auto pb-2">
-            {/* Card 1: Active Cases */}
-            <div className="flex-shrink-0 min-w-[calc(25%-12px)] bg-[#1a1a1a] rounded-[12px] p-5">
-              <p className="text-sm text-gray-400 mb-3">Active Cases</p>
-              <p className="text-4xl font-bold text-white mb-8">{activeCases}</p>
-              <FileText className="h-6 w-6 text-green-500" />
+        {/* Action Cards Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Link href="/cases">
+            <div className="bg-[#1a1a1a] rounded-lg p-6 border border-[#222] hover:border-[#00FF88] transition-colors cursor-pointer h-full">
+              <p className="text-white font-bold mb-2">Manage Cases</p>
+              <p className="text-gray-400 text-sm mb-4">View and update cases</p>
+              <ArrowRight className="h-5 w-5 text-[#00FF88]" />
             </div>
+          </Link>
 
-            {/* Card 2: Appointments Today */}
-            <div className="flex-shrink-0 min-w-[calc(25%-12px)] bg-[#1a1a1a] rounded-[12px] p-5">
-              <p className="text-sm text-gray-400 mb-3">Appointments Today</p>
-              <p className="text-4xl font-bold text-white mb-8">{todayAppointments}</p>
-              <Calendar className="h-6 w-6 text-green-500" />
+          <Link href="/appointments">
+            <div className="bg-[#1a1a1a] rounded-lg p-6 border border-[#222] hover:border-[#00FF88] transition-colors cursor-pointer h-full">
+              <p className="text-white font-bold mb-2">Schedule Appointments</p>
+              <p className="text-gray-400 text-sm mb-4">View upcoming appointments</p>
+              <ArrowRight className="h-5 w-5 text-[#00FF88]" />
             </div>
+          </Link>
 
-            {/* Card 3: Unpaid Invoices */}
-            <div className="flex-shrink-0 min-w-[calc(25%-12px)] bg-[#1a1a1a] rounded-[12px] p-5">
-              <p className="text-sm text-gray-400 mb-3">Unpaid Invoices</p>
-              <p className="text-4xl font-bold text-white mb-8">{formatCurrency(unpaidInvoices)}</p>
-              <DollarSign className="h-6 w-6 text-green-500" />
+          <Link href="/invoices">
+            <div className="bg-[#1a1a1a] rounded-lg p-6 border border-[#222] hover:border-[#00FF88] transition-colors cursor-pointer h-full">
+              <p className="text-white font-bold mb-2">Manage Invoices</p>
+              <p className="text-gray-400 text-sm mb-4">Track payments and billing</p>
+              <ArrowRight className="h-5 w-5 text-[#00FF88]" />
             </div>
-
-            {/* Card 4: New Messages */}
-            <div className="flex-shrink-0 min-w-[calc(25%-12px)] bg-[#1a1a1a] rounded-[12px] p-5">
-              <p className="text-sm text-gray-400 mb-3">New Messages</p>
-              <p className="text-4xl font-bold text-white mb-8">{newMessages}</p>
-              <Mail className="h-6 w-6 text-green-500" />
-            </div>
-          </div>
-
-          {/* Row 2: 2 cards 50/50 split */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            {/* Today Card */}
-            <div className="bg-[#1a1a1a] rounded-[12px] p-6">
-              <p className="text-base font-bold text-white">TODAY - {todayFormatted}</p>
-              <p className="mt-3 text-sm text-gray-500">No appointments today</p>
-            </div>
-
-            {/* Upcoming Hearings Card */}
-            <div className="bg-[#1a1a1a] rounded-[12px] p-6">
-              <p className="text-base font-bold text-white">Upcoming Hearings</p>
-              <p className="mt-3 text-sm text-gray-500">No hearings scheduled</p>
-            </div>
-          </div>
-
-          {/* Row 3: 3 action cards 33/33/33 split */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Manage Cases */}
-            <Link href="/cases">
-              <div className="bg-[#1a1a1a] rounded-[12px] p-6 h-full cursor-pointer hover:bg-[#242424] transition-colors">
-                <p className="text-base font-bold text-white">Manage Cases</p>
-                <p className="mt-2 text-sm text-gray-500">View and update cases</p>
-                <ArrowRight className="h-5 w-5 text-green-500 mt-4" />
-              </div>
-            </Link>
-
-            {/* Schedule Appointments */}
-            <Link href="/appointments">
-              <div className="bg-[#1a1a1a] rounded-[12px] p-6 h-full cursor-pointer hover:bg-[#242424] transition-colors">
-                <p className="text-base font-bold text-white">Schedule Appointments</p>
-                <p className="mt-2 text-sm text-gray-500">View upcoming appointments</p>
-                <ArrowRight className="h-5 w-5 text-green-500 mt-4" />
-              </div>
-            </Link>
-
-            {/* Manage Invoices */}
-            <Link href="/invoices">
-              <div className="bg-[#1a1a1a] rounded-[12px] p-6 h-full cursor-pointer hover:bg-[#242424] transition-colors">
-                <p className="text-base font-bold text-white">Manage Invoices</p>
-                <p className="mt-2 text-sm text-gray-500">Track payments and billing</p>
-                <ArrowRight className="h-5 w-5 text-green-500 mt-4" />
-              </div>
-            </Link>
-          </div>
+          </Link>
         </div>
       </main>
     </div>

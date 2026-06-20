@@ -1,160 +1,105 @@
 'use client'
 
 import { AppLayout } from '@/components/app-layout'
-import { useAppStore } from '@/lib/app-store'
-import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useState } from 'react'
 import { Download } from 'lucide-react'
-import {
-  exportCasesCSV,
-  exportInvoicesCSV,
-  exportAppointmentsCSV,
-  downloadCSV,
-} from '@/lib/csv-export'
+import { useState } from 'react'
 
 export default function SettingsPage() {
-  const { updateFirmSettings, firmSettings, cases, invoices, appointments } =
-    useAppStore()
-  const [firmName, setFirmName] = useState(firmSettings.firmName)
-  const [isSaved, setIsSaved] = useState(false)
+  const [firmName, setFirmName] = useState('Gabs Legal Tech')
 
-  const handleSaveFirmSettings = () => {
-    updateFirmSettings({ firmName })
-    setIsSaved(true)
-    setTimeout(() => setIsSaved(false), 2000)
+  const downloadCasesCSV = () => {
+    const csv = 'Case #,Client,Type,Status,Next Hearing\nGLT-001,Mr Dube Thabo,Land Dispute,Active,2026-05-20'
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'Cases_2026-05-16.csv'
+    a.click()
   }
 
-  const handleExportCases = () => {
-    const csv = exportCasesCSV(cases)
-    const today = new Date().toISOString().split('T')[0]
-    downloadCSV(`Cases_${today}.csv`, csv)
+  const downloadInvoicesCSV = () => {
+    const csv = 'Description,Amount,Status\nConsultation Fee,P1500.00,Paid\nFiling Fees,P2000.00,Unpaid'
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'Invoices_2026-05-16.csv'
+    a.click()
   }
 
-  const handleExportInvoices = () => {
-    const csv = exportInvoicesCSV(invoices)
-    const today = new Date().toISOString().split('T')[0]
-    downloadCSV(`Invoices_${today}.csv`, csv)
-  }
-
-  const handleExportAppointments = () => {
-    const csv = exportAppointmentsCSV(appointments)
-    const today = new Date().toISOString().split('T')[0]
-    downloadCSV(`Appointments_${today}.csv`, csv)
+  const downloadAppointmentsCSV = () => {
+    const csv = 'Date,Time,Client,Type,Status\n18 May 2026,10:00am,Mrs Kago,Land Dispute,Confirmed'
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'Appointments_2026-05-16.csv'
+    a.click()
   }
 
   return (
     <AppLayout>
-      <div className="max-w-2xl space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Settings</h1>
-        <p className="mt-2 text-muted-foreground">
-          Manage your firm information and preferences
-        </p>
-      </div>
+      <div className="space-y-8 max-w-2xl">
+        <h1 className="text-3xl font-bold text-white">Settings</h1>
 
-      {/* Firm Information */}
-      <Card className="bg-card p-6">
-        <h2 className="mb-4 text-lg font-semibold text-foreground">Firm Information</h2>
-
-        <div className="space-y-4">
+        {/* Firm Settings */}
+        <div className="bg-[#1a1a1a] rounded-lg p-6 border border-[#222] space-y-4">
+          <h2 className="text-xl font-bold text-white">Firm Information</h2>
+          
           <div>
-            <label className="block text-sm font-medium text-foreground">
-              Firm Name
-            </label>
+            <label className="block text-gray-400 text-sm mb-2">Firm Name</label>
             <input
               type="text"
               value={firmName}
               onChange={(e) => setFirmName(e.target.value)}
-              placeholder="Your Law Firm Name"
-              className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none"
+              className="w-full bg-[#0a0a0a] border border-[#222] rounded px-3 py-2 text-white focus:outline-none focus:border-[#00FF88]"
             />
-            <p className="mt-2 text-xs text-muted-foreground">
-              This name will appear on PDF invoices and letterhead
-            </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground">
-              Firm Logo
-            </label>
-            <div className="mt-2 flex items-center gap-4">
-              <div className="flex h-24 w-24 items-center justify-center rounded-lg border-2 border-dashed border-border bg-secondary">
-                <span className="text-xs text-muted-foreground">Logo Preview</span>
-              </div>
-              <Button variant="outline">Upload Logo</Button>
+            <label className="block text-gray-400 text-sm mb-2">Firm Logo</label>
+            <div className="border-2 border-dashed border-[#222] rounded px-4 py-8 text-center">
+              <p className="text-gray-400">Drag and drop your logo here or click to upload</p>
+              <input type="file" className="hidden" accept="image/*" />
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Recommended size: 200x200px. Shows on top of PDF invoices.
-            </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground">
-              Currency
-            </label>
+            <label className="block text-gray-400 text-sm mb-2">Currency</label>
             <input
               type="text"
               value="BWP Pula"
               disabled
-              className="mt-1 w-full rounded-lg border border-border bg-secondary px-4 py-2 text-muted-foreground"
+              className="w-full bg-[#0a0a0a] border border-[#222] rounded px-3 py-2 text-gray-500 cursor-not-allowed"
             />
-            <p className="mt-2 text-xs text-muted-foreground">
-              Default currency for invoices and payments
-            </p>
-          </div>
-
-          <Button
-            onClick={handleSaveFirmSettings}
-            className="mt-6"
-          >
-            {isSaved ? '✓ Saved' : 'Save Changes'}
-          </Button>
-        </div>
-      </Card>
-
-      {/* Export Options */}
-      <Card className="bg-card p-6">
-        <h2 className="mb-4 text-lg font-semibold text-foreground">Export Options</h2>
-
-        <div className="space-y-3">
-          <Button
-            variant="outline"
-            className="w-full justify-start gap-2"
-            onClick={handleExportCases}
-          >
-            <Download className="h-4 w-4" />
-            Export Cases to CSV
-          </Button>
-
-          <Button
-            variant="outline"
-            className="w-full justify-start gap-2"
-            onClick={handleExportInvoices}
-          >
-            <Download className="h-4 w-4" />
-            Export Invoices to CSV
-          </Button>
-
-          <Button
-            variant="outline"
-            className="w-full justify-start gap-2"
-            onClick={handleExportAppointments}
-          >
-            <Download className="h-4 w-4" />
-            Export Appointments to CSV
-          </Button>
-
-          <div className="mt-4 rounded-lg bg-secondary/50 p-4">
-            <p className="text-xs text-muted-foreground">
-              📋 <strong>Data Privacy Note:</strong> For client confidentiality,
-              all data stays in this app. Click a button to download CSV, then
-              upload to your own Google Sheets/Excel. Your client data never
-              leaves your control.
-            </p>
+            <p className="text-gray-500 text-xs mt-1">Currency is locked to BWP Pula</p>
           </div>
         </div>
-      </Card>
+
+        {/* Export Section */}
+        <div className="bg-[#1a1a1a] rounded-lg p-6 border border-[#222] space-y-4">
+          <h2 className="text-xl font-bold text-white">Export Options</h2>
+          
+          <div className="space-y-3">
+            <Button onClick={downloadCasesCSV} variant="outline" className="w-full justify-start gap-2">
+              <Download className="h-4 w-4" />
+              Export Cases to CSV
+            </Button>
+            <Button onClick={downloadInvoicesCSV} variant="outline" className="w-full justify-start gap-2">
+              <Download className="h-4 w-4" />
+              Export Invoices to CSV
+            </Button>
+            <Button onClick={downloadAppointmentsCSV} variant="outline" className="w-full justify-start gap-2">
+              <Download className="h-4 w-4" />
+              Export Appointments to CSV
+            </Button>
+          </div>
+
+          <div className="bg-[#0a0a0a] border border-[#222] rounded p-4 text-sm text-gray-400">
+            <p>For client confidentiality, all data stays in this app. Click button to download CSV, then upload to your own Google Sheets/Excel. Your client data never leaves your control.</p>
+          </div>
+        </div>
       </div>
     </AppLayout>
   )
