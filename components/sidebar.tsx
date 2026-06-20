@@ -82,7 +82,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             onClick={() => toggleMenu(item.name)}
             className={cn(
               'flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-              'text-muted-foreground hover:bg-sidebar-accent hover:text-foreground'
+              'text-gray-400 hover:bg-[#222] hover:text-white'
             )}
           >
             <div className="flex items-center gap-3">
@@ -97,7 +97,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             />
           </button>
           {isExpanded && (
-            <div className="ml-4 space-y-1 border-l border-border py-1 pl-3">
+            <div className="ml-4 space-y-1 border-l border-[#222] py-1 pl-3">
               {item.items.map((subitem) => (
                 <Link
                   key={subitem.name}
@@ -106,8 +106,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
                     pathname === subitem.href
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:bg-sidebar-accent hover:text-foreground'
+                      ? 'bg-green-500 text-white'
+                      : 'text-gray-400 hover:bg-[#222] hover:text-white'
                   )}
                 >
                   <subitem.icon className="h-4 w-4" />
@@ -128,8 +128,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         className={cn(
           'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
           isActive
-            ? 'bg-primary text-primary-foreground'
-            : 'text-muted-foreground hover:bg-sidebar-accent hover:text-foreground'
+            ? 'bg-green-500 text-white'
+            : 'text-gray-400 hover:bg-[#222] hover:text-white'
         )}
       >
         <item.icon className="h-5 w-5" />
@@ -151,24 +151,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-0 z-40 h-screen w-64 border-r border-border bg-sidebar transition-transform duration-300 ease-in-out',
+          'fixed left-0 top-0 z-40 h-screen w-60 border-r border-[#222] bg-[#111] transition-transform duration-300 ease-in-out',
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         <div className="flex h-full flex-col">
-          <div className="flex h-16 items-center justify-between border-b border-border px-6">
+          <div className="flex h-16 items-center justify-between border-b border-[#222] px-6">
             <div className="flex items-center gap-3">
-              <Image
-                src="/logo.png"
-                alt="Gabs Legal Tech Logo"
-                width={40}
-                height={40}
-                className="rounded-lg"
-              />
-              <div>
-                <h1 className="text-lg font-bold text-foreground">Gabs Legal</h1>
-                <p className="text-xs text-gray-500">Built in Botswana</p>
-              </div>
+              <h1 className="text-lg font-bold text-green-500">Gabs Legal Tech</h1>
             </div>
             <Button
               variant="ghost"
@@ -185,9 +175,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             {navigation.map((item) => renderNavItem(item))}
           </nav>
 
-          <div className="border-t border-border p-4">
-            <div className="rounded-lg bg-secondary/50 p-4">
-              <p className="text-xs text-muted-foreground">
+          <div className="border-t border-[#222] p-4">
+            <div className="rounded-lg bg-[#1a1a1a] p-4">
+              <p className="text-xs text-gray-500">
                 Professional legal case & client management for Botswana law firms
               </p>
             </div>
