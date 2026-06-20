@@ -1,5 +1,6 @@
 'use client'
 
+import { AppLayout } from '@/components/app-layout'
 import { useAppStore } from '@/lib/app-store'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -36,10 +37,11 @@ export default function HomePage() {
     .sort((a, b) => a.daysUntil - b.daysUntil)
 
   return (
-    <main className="space-y-8">
-      {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
+    <AppLayout>
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex items-start justify-between">
+          <div>
           <h1 className="text-3xl font-bold text-foreground">
             Welcome to Gabs Legal Tech
           </h1>
@@ -47,15 +49,16 @@ export default function HomePage() {
             Professional legal case & client management for Botswana law firms
           </p>
         </div>
-        {/* Botswana Flag */}
-        <div className="hidden shrink-0 sm:block">
-          <svg width="80" height="54" viewBox="0 0 5 3" className="rounded shadow-md">
-            <rect width="5" height="3" fill="#75AADB" />
-            <rect y="1.125" width="5" height="0.75" fill="#FFFFFF" />
-            <rect y="1.25" width="5" height="0.5" fill="#000000" />
-          </svg>
+          {/* Botswana Flag */}
+          <div className="hidden shrink-0 sm:block">
+            <svg width="80" height="54" viewBox="0 0 5 3" className="rounded shadow-md">
+              <rect width="5" height="3" fill="#75AADB" />
+              <rect y="1.125" width="5" height="0.75" fill="#FFFFFF" />
+              <rect y="1.25" width="5" height="0.5" fill="#000000" />
+            </svg>
+          </div>
         </div>
-      </div>
+        </div>
 
       {/* Dashboard Stats */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -216,6 +219,6 @@ export default function HomePage() {
           </Card>
         </Link>
       </div>
-    </main>
+    </AppLayout>
   )
 }

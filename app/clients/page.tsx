@@ -1,5 +1,6 @@
 'use client'
 
+import { AppLayout } from '@/components/app-layout'
 import { useAppStore } from '@/lib/app-store'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -77,7 +78,8 @@ export default function ClientsPage() {
   }
 
   return (
-    <main className="space-y-6">
+    <AppLayout>
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-foreground">Clients</h1>
         <Button size="sm" className="gap-2">
@@ -129,6 +131,7 @@ export default function ClientsPage() {
           Login as Demo Client
         </Button>
       </Card>
-    </main>
+      </div>
+    </AppLayout>
   )
 }

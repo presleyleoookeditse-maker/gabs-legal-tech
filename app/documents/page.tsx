@@ -1,5 +1,6 @@
 'use client'
 
+import { AppLayout } from '@/components/app-layout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FileSignature, Scale, Receipt, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
@@ -27,7 +28,8 @@ const tools = [
 
 export default function DocumentsPage() {
   return (
-    <main className="space-y-8">
+    <AppLayout>
+      <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-foreground">Document Generators</h1>
         <p className="mt-2 text-muted-foreground">
@@ -55,6 +57,7 @@ export default function DocumentsPage() {
           </Link>
         ))}
       </div>
-    </main>
+      </div>
+    </AppLayout>
   )
 }

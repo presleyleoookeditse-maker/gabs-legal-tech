@@ -1,5 +1,6 @@
 'use client'
 
+import { AppLayout } from '@/components/app-layout'
 import { useAppStore } from '@/lib/app-store'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -43,7 +44,8 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="max-w-2xl space-y-6">
+    <AppLayout>
+      <div className="max-w-2xl space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-foreground">Settings</h1>
         <p className="mt-2 text-muted-foreground">
@@ -153,6 +155,7 @@ export default function SettingsPage() {
           </div>
         </div>
       </Card>
-    </main>
+      </div>
+    </AppLayout>
   )
 }

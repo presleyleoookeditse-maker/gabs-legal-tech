@@ -1,5 +1,6 @@
 'use client'
 
+import { AppLayout } from '@/components/app-layout'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { MapPin, Phone, Clock, Mail } from 'lucide-react'
@@ -13,7 +14,8 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="space-y-6">
+    <AppLayout>
+      <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-foreground">Contact Us</h1>
         <p className="mt-2 text-muted-foreground">
@@ -132,6 +134,7 @@ export default function ContactPage() {
           </div>
         </Card>
       </div>
-    </main>
+      </div>
+    </AppLayout>
   )
 }

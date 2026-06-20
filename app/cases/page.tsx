@@ -1,5 +1,6 @@
 'use client'
 
+import { AppLayout } from '@/components/app-layout'
 import { useAppStore } from '@/lib/app-store'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -21,7 +22,8 @@ export default function CasesPage() {
   const caseDetail = cases.find((c) => c.id === selectedCase)
 
   return (
-    <main className="space-y-6">
+    <AppLayout>
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-foreground">Cases</h1>
         <div className="flex gap-2">
@@ -176,6 +178,7 @@ export default function CasesPage() {
           )}
         </div>
       )}
-    </main>
+      </div>
+    </AppLayout>
   )
 }

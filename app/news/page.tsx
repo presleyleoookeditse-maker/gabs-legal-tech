@@ -1,5 +1,6 @@
 'use client'
 
+import { AppLayout } from '@/components/app-layout'
 import { Card } from '@/components/ui/card'
 
 const newsItems = [
@@ -21,7 +22,8 @@ const newsItems = [
 
 export default function NewsPage() {
   return (
-    <main className="space-y-6">
+    <AppLayout>
+      <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-foreground">News & Updates</h1>
         <p className="mt-2 text-muted-foreground">
@@ -50,6 +52,6 @@ export default function NewsPage() {
           </Card>
         ))}
       </div>
-    </main>
+    </AppLayout>
   )
 }
