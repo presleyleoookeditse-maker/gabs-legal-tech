@@ -8,8 +8,89 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 
 export default function ClientsPage() {
-  const { clients } = useAppStore()
+  const { clients, addClient } = useAppStore()
   const [showPortal, setShowPortal] = useState(false)
+  const [showNewForm, setShowNewForm] = useState(false)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  })
+
+  const handleAddClient = () => {
+    if (formData.name && formData.email) {
+      addClient({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        caseNumber: `GLT-${Math.floor(Math.random() * 1000)}`,
+      })
+      setFormData({ name: '', email: '', phone: '' })
+      setShowNewForm(false)
+    }
+  }
+
+  if (showNewForm) {
+    return (
+      <AppLayout>
+        <div className="max-w-md space-y-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold text-foreground">Add New Client</h1>
+            <Button
+              variant="outline"
+              onClick={() => setShowNewForm(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+
+          <Card className="bg-card p-6">
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-foreground">Name</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-border bg-secondary/50 px-3 py-2 text-foreground placeholder-muted-foreground"
+                  placeholder="Client full name"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground">Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-border bg-secondary/50 px-3 py-2 text-foreground placeholder-muted-foreground"
+                  placeholder="client@example.com"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground">Phone</label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-border bg-secondary/50 px-3 py-2 text-foreground placeholder-muted-foreground"
+                  placeholder="+267 71 234567"
+                />
+              </div>
+
+              <Button
+                onClick={handleAddClient}
+                className="w-full"
+              >
+                Add Client
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </AppLayout>
+    )
+  }
 
   if (showPortal) {
     return (
@@ -82,7 +163,11 @@ export default function ClientsPage() {
       <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-foreground">Clients</h1>
-        <Button size="sm" className="gap-2">
+        <Button
+          size="sm"
+          className="gap-2"
+          onClick={() => setShowNewForm(true)}
+        >
           <Plus className="h-4 w-4" />
           New Client
         </Button>
