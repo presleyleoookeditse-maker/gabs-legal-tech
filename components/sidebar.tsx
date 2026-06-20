@@ -155,9 +155,18 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       >
         <div className="flex h-full flex-col">
           <div className="flex h-auto items-start justify-between border-b border-[#222] px-6 py-4">
-            <div className="flex flex-col gap-1">
-              <h1 className="text-lg font-bold text-green-500">Gabs Legal Tech</h1>
-              <p className="text-xs text-gray-400">Built in Botswana</p>
+            <div className="flex items-start gap-3">
+              <Image
+                src="/gabs-logo.png"
+                alt="Gabs Legal Tech"
+                width={40}
+                height={40}
+                className="rounded"
+              />
+              <div className="flex flex-col gap-1">
+                <h1 className="text-lg font-bold text-green-500">Gabs Legal Tech</h1>
+                <p className="text-xs text-gray-400">Built in Botswana</p>
+              </div>
             </div>
             <Button
               variant="ghost"

@@ -2,7 +2,7 @@
 
 import { AppLayout } from '@/components/app-layout'
 import { Button } from '@/components/ui/button'
-import { Download } from 'lucide-react'
+import { Download, Plus } from 'lucide-react'
 
 const invoices = [
   { id: '1', amount: 1500, description: 'Consultation Fee', status: 'Paid' },
@@ -30,10 +30,16 @@ export default function InvoicesPage() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold text-white">Invoices</h1>
-          <Button onClick={downloadCSV} variant="outline" className="gap-2">
-            <Download className="h-4 w-4" />
-            Export CSV
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={downloadCSV} variant="outline" className="gap-2">
+              <Download className="h-4 w-4" />
+              Export CSV
+            </Button>
+            <Button className="gap-2 bg-[#00FF88] text-black hover:bg-[#00DD77]">
+              <Plus className="h-4 w-4" />
+              New Invoice
+            </Button>
+          </div>
         </div>
 
         <div className="bg-[#1a1a1a] rounded-lg p-6 border border-[#222]">

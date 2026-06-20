@@ -2,12 +2,19 @@
 
 import { AppLayout } from '@/components/app-layout'
 import { Button } from '@/components/ui/button'
+import { Plus } from 'lucide-react'
 
 export default function ClientsPage() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-white">Clients</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold text-white">Clients</h1>
+          <Button className="gap-2 bg-[#00FF88] text-black hover:bg-[#00DD77]">
+            <Plus className="h-4 w-4" />
+            New Client
+          </Button>
+        </div>
 
         <Button className="bg-[#00FF88] text-black hover:bg-[#00DD77]">
           Login as Demo Client
