@@ -5,6 +5,10 @@ import { Button } from '@/components/ui/button'
 import { MapPin, Phone, Clock } from 'lucide-react'
 
 export default function ContactPage() {
+  const handleOpenMaps = () => {
+    window.open('https://maps.google.com/?q=Gaborone,Botswana', '_blank')
+  }
+
   return (
     <AppLayout>
       <div className="space-y-6">
@@ -35,7 +39,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <Button className="w-full bg-[#00FF88] text-black hover:bg-[#00DD77]">
+          <Button onClick={handleOpenMaps} className="w-full bg-[#00FF88] text-black hover:bg-[#00DD77]">
             Open Google Maps
           </Button>
         </div>
