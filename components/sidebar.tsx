@@ -165,7 +165,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               />
               <div className="flex flex-col gap-1">
                 <h1 className="text-lg font-bold text-green-500">Gabs Legal Tech</h1>
-                <p className="text-xs text-gray-400">Built in Botswana</p>
+                <div className="flex items-center gap-1">
+                  <span className="text-sm">🇧🇼</span>
+                  <p className="text-xs text-gray-400">Built in Botswana</p>
+                </div>
               </div>
             </div>
             <Button
