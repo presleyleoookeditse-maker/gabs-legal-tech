@@ -20,6 +20,7 @@ import {
   Clock,
   CheckSquare,
   MessageCircle,
+  Sheet,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
@@ -45,6 +46,7 @@ const navigation: NavItem[] = [
     items: [
       { name: 'Documents', href: '/more-tools/documents', icon: FileText },
       { name: 'Templates', href: '/more-tools/templates', icon: FileText },
+      { name: 'Google Sheets', href: '/more-tools/google-sheets', icon: Sheet },
       { name: 'Timer', href: '/more-tools/timer', icon: Clock },
       { name: 'Tasks', href: '/more-tools/tasks', icon: CheckSquare },
       { name: 'WhatsApp Notes', href: '/more-tools/whatsapp', icon: MessageCircle },
