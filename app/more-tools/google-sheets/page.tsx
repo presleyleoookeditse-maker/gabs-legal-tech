@@ -10,6 +10,8 @@ export default function GoogleSheetsPage() {
   const [selectedSheet, setSelectedSheet] = useState('')
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
+  const [sheetsLink, setSheetsLink] = useState('')
+  const [linkedSheets, setLinkedSheets] = useState<string[]>([])
   const [recentImports, setRecentImports] = useState([
     { id: 1, message: 'Imported 23 clients from "Clients Database"', date: '20 Jun 2026' },
   ])
@@ -18,6 +20,24 @@ export default function GoogleSheetsPage() {
     setIsConnected(true)
     setToastMessage('Connected as demo@lawfirm.bw')
     setShowToast(true)
+    setTimeout(() => setShowToast(false), 3000)
+  }
+
+  const handleLinkSheet = () => {
+    if (!sheetsLink.trim()) {
+      alert('Please enter a Google Sheets link')
+      return
+    }
+    
+    if (!sheetsLink.includes('docs.google.com/spreadsheets')) {
+      alert('Please enter a valid Google Sheets link')
+      return
+    }
+
+    setLinkedSheets([...linkedSheets, sheetsLink])
+    setToastMessage('Google Sheets account linked successfully!')
+    setShowToast(true)
+    setSheetsLink('')
     setTimeout(() => setShowToast(false), 3000)
   }
 
@@ -61,24 +81,68 @@ export default function GoogleSheetsPage() {
           <h2 className="text-xl font-bold text-white">Step 1: Connect Account</h2>
           <p className="text-gray-400">Authorize Gabs Legal Tech to access your Google Sheets</p>
           
-          <div className="flex items-center justify-between">
-            <div>
-              {isConnected ? (
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-[#00FF88]" />
-                  <span className="text-[#00FF88]">Connected as demo@lawfirm.bw</span>
-                </div>
-              ) : (
-                <span className="text-gray-500">Not connected</span>
-              )}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                {isConnected ? (
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-[#00FF88]" />
+                    <span className="text-[#00FF88]">Connected as demo@lawfirm.bw</span>
+                  </div>
+                ) : (
+                  <span className="text-gray-500">Not connected</span>
+                )}
+              </div>
+              <Button
+                onClick={handleConnect}
+                disabled={isConnected}
+                className="bg-[#00FF88] text-black hover:bg-[#00DD77] disabled:bg-gray-600 disabled:cursor-not-allowed font-bold"
+              >
+                Connect Google Sheets
+              </Button>
             </div>
-            <Button
-              onClick={handleConnect}
-              disabled={isConnected}
-              className="bg-[#00FF88] text-black hover:bg-[#00DD77] disabled:bg-gray-600 disabled:cursor-not-allowed font-bold"
-            >
-              Connect Google Sheets
-            </Button>
+
+            {/* Link Google Sheets Account */}
+            {isConnected && (
+              <div className="mt-4 pt-4 border-t border-[#222] space-y-3">
+                <h3 className="text-white font-semibold">Link Your Google Sheets Account</h3>
+                <p className="text-gray-400 text-sm">Enter your Google Sheets link to sync data automatically</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={sheetsLink}
+                    onChange={(e) => setSheetsLink(e.target.value)}
+                    placeholder="https://docs.google.com/spreadsheets/d/..."
+                    className="flex-1 bg-[#0a0a0a] border border-[#222] rounded px-4 py-2 text-white focus:outline-none focus:border-[#00FF88] text-sm"
+                  />
+                  <Button
+                    onClick={handleLinkSheet}
+                    className="bg-[#00FF88] text-black hover:bg-[#00DD77] font-bold px-6"
+                  >
+                    Link
+                  </Button>
+                </div>
+
+                {linkedSheets.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    <p className="text-gray-400 text-sm font-semibold">Linked Sheets:</p>
+                    {linkedSheets.map((link, idx) => (
+                      <div key={idx} className="bg-[#0a0a0a] p-2 rounded border border-[#222] flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-[#00FF88] flex-shrink-0" />
+                        <a
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#00FF88] text-sm truncate hover:underline"
+                        >
+                          {link.substring(0, 50)}...
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
